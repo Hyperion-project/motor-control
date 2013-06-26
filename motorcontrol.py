@@ -19,7 +19,7 @@ def findController():
             test = s.readline()
             if test == chr(0x41):
                 return s
-        except (error) as e:
+        except (serial.SerialException, serial.SerialTimeoutException) as e:
             print(e)
             pass
 
@@ -28,19 +28,20 @@ def sendAction(ser, motor, angle):
     #Send actions
     ser.write(chr(0xF0))
     ser.write(chr(motor))
-    ser.write(str(angle)+"\n")
+    ser.write(str(angle) + "\n")
     ser.write(chr(0x0F))
     ser.flush()
 
-    #wait for 10 seconds
+    #wait for 10 seconds or until controller is done
     for i in range(10):
-        test = ser.read();
+        test = ser.read()
         if test == chr(0x44):
             return True
     return False
 
 
 if __name__ == '__main__':
+    #setup server
     print("Motor controller Server: init")
     s = BusServer.BusServer(15001)
     s.listen()
@@ -55,14 +56,14 @@ if __name__ == '__main__':
             }.get(packet.data['motor'])
 
             angle = packet.data['angle'] % 360
-            steps = myAngle - angle;
+            steps = myAngle - angle
             ser = findController()
             if ser is not None:
-                 result = sendAction(ser, motor, angle)
-                 if packet.data['returnport'] is not None:
+                result = sendAction(ser, motor, angle)
+                if packet.data['returnport'] is not None:
                     c = BusClient.BusClient(packet.data['returnport'])
                     try:
                         c.send(BusCore.Packet(BusCore.PacketType.SETMOTOR, {'result': result}))
                     except:
                         print("Motor controller Server: failed to send done")
-                 ser.close()
+                ser.close()
