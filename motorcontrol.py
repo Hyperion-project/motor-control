@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
             angle = packet.data['angle']
             steps = myAngle - angle
+            steps = math.round(steps * 1600/360)
             print str(steps) + "\n";
             ser = findController()
             if ser is not None:
