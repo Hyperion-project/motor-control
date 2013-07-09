@@ -73,6 +73,7 @@ if __name__ == '__main__':
 
             angle = packet.data['angle']
             steps = angle - myAngle
+            myAngle = angle;
             steps = round(steps * (1600/360))
             print str(steps) + "\n"
             ser = findController()
