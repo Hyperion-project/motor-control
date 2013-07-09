@@ -34,7 +34,6 @@ def findController():
             return s
     except (serial.SerialException, serial.SerialTimeoutException) as e:
         print(e)
-        pass
 
 
 def sendAction(ser, motor, angle):
