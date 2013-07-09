@@ -32,7 +32,7 @@ def sendAction(ser, motor, angle):
         ser.write(chr(0x02))
     if(angle > 0):
         ser.write(chr(0x01))
-    ser.write(str(math.fabs(angle)) + "\n")
+    ser.write(str(abs(angle)) + "\n")
     ser.write(chr(0x0F))
     ser.flush()
 
@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
             angle = packet.data['angle']
             steps = myAngle - angle
-            steps = math.round(steps * 1600/360)
+            steps = round(steps * 1600/360)
             print str(steps) + "\n";
             ser = findController()
             if ser is not None:
