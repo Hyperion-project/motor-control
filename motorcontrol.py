@@ -74,7 +74,7 @@ if __name__ == '__main__':
             angle = packet.data['angle']
             steps = angle - myAngle
             myAngle = angle;
-            steps = round(steps * (1600/360))
+            steps = round(steps * (1600.0/360.0))
             print str(steps) + "\n"
             ser = findController()
             if ser is not None:
