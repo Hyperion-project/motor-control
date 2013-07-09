@@ -72,12 +72,12 @@ if __name__ == '__main__':
             }.get(packet.data['motor'])
 
             angle = packet.data['angle']
-            steps = myAngle - angle
+            steps = angle - myAngle
             steps = round(steps * (1600/360))
             print str(steps) + "\n"
             ser = findController()
             if ser is not None:
-                result = sendAction(ser, motor, angle)
+                result = sendAction(ser, motor, steps)
                 if packet.data['returnport'] is not None:
                     c = BusClient.BusClient(packet.data['returnport'])
                     try:
