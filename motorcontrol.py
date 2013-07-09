@@ -28,15 +28,18 @@ def sendAction(ser, motor, angle):
     #Send actions
     ser.write(chr(0xF0))
     ser.write(chr(motor))
-    ser.write(str(angle) + "\n")
+    if(angle < 0):
+        ser.write(chr(0x02))
+    if(angle > 0):
+        ser.write(chr(0x01))
+    ser.write(str(math.fabs(angle)) + "\n")
     ser.write(chr(0x0F))
     ser.flush()
 
     #wait for 10 seconds or until controller is done
     for i in range(10):
         test = ser.read()
-        if test == chr(0x44):
-            return True
+        print test;
     return False
 
 
@@ -55,8 +58,9 @@ if __name__ == '__main__':
                 'C': 0x03
             }.get(packet.data['motor'])
 
-            angle = packet.data['angle'] % 360
+            angle = packet.data['angle']
             steps = myAngle - angle
+            print str(steps) + "\n";
             ser = findController()
             if ser is not None:
                 result = sendAction(ser, motor, angle)
