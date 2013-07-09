@@ -51,7 +51,8 @@ def sendAction(ser, motor, angle):
     #wait for 10 seconds or until controller is done
     for i in range(10):
         test = ser.read()
-        print test;
+        if test == chr(0x42):
+            return True
     return False
 
 
@@ -72,8 +73,8 @@ if __name__ == '__main__':
 
             angle = packet.data['angle']
             steps = myAngle - angle
-            steps = round(steps * 1600/360)
-            print str(steps) + "\n";
+            steps = round(steps * (1600/360))
+            print str(steps) + "\n"
             ser = findController()
             if ser is not None:
                 result = sendAction(ser, motor, angle)
