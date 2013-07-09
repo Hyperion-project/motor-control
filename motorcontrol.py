@@ -22,6 +22,19 @@ def findController():
         except (serial.SerialException, serial.SerialTimeoutException) as e:
             print(e)
             pass
+    try:
+        #open serial to controller
+        s = serial.Serial('/dev/ttyUSB0', 9600, timeout=2)
+        time.sleep(2)
+
+        #handshake with THE answer
+        s.write(chr(0x42))
+        test = s.readline()
+        if test == chr(0x41):
+            return s
+    except (serial.SerialException, serial.SerialTimeoutException) as e:
+        print(e)
+        pass
 
 
 def sendAction(ser, motor, angle):
