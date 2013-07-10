@@ -51,7 +51,7 @@ def sendAction(ser, motor, angle):
     #wait for 10 seconds or until controller is done
     for i in range(10):
         test = ser.read()
-        if test == chr(0x42):
+        if test == chr(0x44):
             return True
     return False
 
