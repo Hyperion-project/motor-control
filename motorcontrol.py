@@ -78,7 +78,8 @@ if __name__ == '__main__':
             if packet.data['motor'] == 'A':
                 steps = round(steps * (70.0 / 15.0))
 
-            print str(steps) + "\n"
+            print "angle:" + str(angle) + "\n"
+            print "steps:" + str(steps) + "\n"
             if steps != 0:
                 ser = findController()
                 if ser is not None:
