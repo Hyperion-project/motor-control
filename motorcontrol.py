@@ -77,7 +77,7 @@ if __name__ == '__main__':
             steps = angle - myAngle[motor]
             myAngle[motor] = angle;
             steps = round(steps * (1600.0/360.0))
-            if packet.data['motor'] == ['A']:
+            if packet.data['motor'] == 'A':
                 steps = round(steps * (70.0/15.0))
 
             print str(steps) + "\n"
