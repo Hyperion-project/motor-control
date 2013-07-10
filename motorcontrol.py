@@ -64,7 +64,7 @@ if __name__ == '__main__':
     myAngle = {0x01: 0, 0x02: 0, 0x03: 0}
     while True:
         packet = s.getPacket()
-        if packet.action == BusCore.PacketType.SETMOTOR:
+        if packet.action == BusCore.PacketType.SETMOTOR and 'motor' in packet.data:
             motor = {
                 'A': 0x02,
                 'B': 0x01,
