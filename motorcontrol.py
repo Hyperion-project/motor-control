@@ -8,6 +8,19 @@ from multibus import BusCore, BusServer, BusClient
 
 
 def findController():
+    try:
+        #open serial to controller
+        s = serial.Serial('/dev/ttyUSB0', 9600, timeout=2)
+        time.sleep(2)
+
+        #handshake with THE answer
+        s.write(chr(0x42))
+        test = s.readline()
+        if test == chr(0x41):
+            return s
+    except (serial.SerialException, serial.SerialTimeoutException) as e:
+        print(e)
+
     for i in range(256):
         try:
             #open serial to controller
@@ -22,18 +35,7 @@ def findController():
         except (serial.SerialException, serial.SerialTimeoutException) as e:
             print(e)
             pass
-    try:
-        #open serial to controller
-        s = serial.Serial('/dev/ttyUSB0', 9600, timeout=2)
-        time.sleep(2)
 
-        #handshake with THE answer
-        s.write(chr(0x42))
-        test = s.readline()
-        if test == chr(0x41):
-            return s
-    except (serial.SerialException, serial.SerialTimeoutException) as e:
-        print(e)
 
 
 def sendAction(ser, motor, angle):
@@ -61,20 +63,23 @@ if __name__ == '__main__':
     print("Motor controller Server: init")
     s = BusServer.BusServer(15001)
     s.listen()
-    myAngle = 0
+    myAngle = {0x01: 0,0x02: 0,0x03: 0}
     while True:
         packet = s.getPacket()
         if packet.action == BusCore.PacketType.SETMOTOR:
             motor = {
-                'A': 0x01,
-                'B': 0x02,
+                'A': 0x02,
+                'B': 0x01,
                 'C': 0x03
             }.get(packet.data['motor'])
 
             angle = packet.data['angle']
-            steps = angle - myAngle
-            myAngle = angle;
+            steps = angle - myAngle[motor]
+            myAngle[motor] = angle;
             steps = round(steps * (1600.0/360.0))
+            if packet.data['motor'] == ['A']:
+                steps = round(steps * (70.0/15.0))
+
             print str(steps) + "\n"
             ser = findController()
             if ser is not None:
