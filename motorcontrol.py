@@ -91,6 +91,7 @@ if __name__ == '__main__':
                             print("Motor controller Server: failed to send done")
                     ser.close()
             else:
+                c = BusClient.BusClient(packet.data['returnport'])
                 try:
                     c.send(BusCore.Packet(BusCore.PacketType.SETMOTOR, {'result': True}))
                 except:
